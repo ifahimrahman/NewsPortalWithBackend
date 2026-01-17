@@ -21,10 +21,7 @@ async function update(id, updates) {
 }
 
 async function remove(id) {
-  const item = await News.findById(id);
-  if (!item) return null;
-  await item.remove();
-  return item;
+  return await News.findByIdAndDelete(id);
 }
 
 module.exports = { listAll, getById, create, update, remove };
