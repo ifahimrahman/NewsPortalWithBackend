@@ -34,7 +34,8 @@ async function updateComment(req, res, next) {
     if (!comment) return res.status(404).json({ message: 'Comment not found' });
     
     // Only admin or comment owner can update
-    if (String(comment.author._id) !== String(req.user.id) && req.user.role !== 'admin') {
+    const authorId = comment.author?._id || comment.author;
+    if (String(authorId) !== String(req.user.id) && req.user.role !== 'admin') {
       return res.status(403).json({ message: 'Forbidden - only owner or admin can update' });
     }
     
@@ -51,7 +52,8 @@ async function deleteComment(req, res, next) {
     if (!comment) return res.status(404).json({ message: 'Comment not found' });
     
     // Only admin or comment owner can delete
-    if (String(comment.author._id) !== String(req.user.id) && req.user.role !== 'admin') {
+    const authorId = comment.author?._id || comment.author;
+    if (String(authorId) !== String(req.user.id) && req.user.role !== 'admin') {
       return res.status(403).json({ message: 'Forbidden - only owner or admin can delete' });
     }
     
