@@ -29,6 +29,8 @@ export default function NewsDetail(){
   });
   if(!res.ok) return alert('Failed to add comment');
   const comment=await res.json();
+  // Ensure author is set with proper _id
+  comment.author = comment.author || { _id: user.id, name: user.name };
   setComments([comment,...comments]);
   setNewComment('');
  };

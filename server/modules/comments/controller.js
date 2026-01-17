@@ -19,7 +19,9 @@ async function createComment(req, res, next) {
     });
     // Clear cache for this news' comments
     clearCache(`/api/comments/news/${req.params.newsId}`);
-    res.status(201).json(comment);
+    // Ensure author is populated before sending response
+    const populatedComment = await commentService.getById(comment._id);
+    res.status(201).json(populatedComment);
   } catch (err) { next(err); }
 }
 
