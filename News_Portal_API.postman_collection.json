@@ -1,0 +1,367 @@
+{
+  "info": {
+    "name": "News Portal API",
+    "description": "Complete API documentation for News Portal with Authentication, News CRUD, and Comments",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"author\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/auth/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Register a new user\n- Role options: 'admin', 'author', 'reader' (default: 'author')\n- Returns: User object with JWT token"
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Login with email and password\n- Returns: User object with JWT token\n- Rate limited: 5 attempts per 15 minutes"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "News",
+      "item": [
+        {
+          "name": "Get All News",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/news",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "news"
+              ]
+            },
+            "description": "Get all news articles\n- Public endpoint (no auth required)\n- Results are cached for 10 minutes\n- Rate limited: 100 requests per 15 minutes"
+          },
+          "response": []
+        },
+        {
+          "name": "Get News by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/news/{{newsId}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "news",
+                "{{newsId}}"
+              ]
+            },
+            "description": "Get a specific news article by ID\n- Public endpoint (no auth required)\n- Results are cached for 10 minutes\n- Replace {{newsId}} with actual news ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Create News",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "description": "JWT token from login/register"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Breaking News: New Technology Released\",\n  \"content\": \"This is a detailed news article about the latest technology developments...\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/news",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "news"
+              ]
+            },
+            "description": "Create a new news article\n- Auth required (Bearer token)\n- Any authenticated user can create news\n- Clears cache on success"
+          },
+          "response": []
+        },
+        {
+          "name": "Update News",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated: Breaking News Title\",\n  \"content\": \"Updated content for the news article...\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/news/{{newsId}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "news",
+                "{{newsId}}"
+              ]
+            },
+            "description": "Update a news article\n- Auth required\n- Only author or admin can update\n- Clears cache on success"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete News",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/news/{{newsId}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "news",
+                "{{newsId}}"
+              ]
+            },
+            "description": "Delete a news article\n- Auth required\n- Only author or admin can delete\n- Clears cache on success"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Comments",
+      "item": [
+        {
+          "name": "Get Comments by News",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/comments/news/{{newsId}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "comments",
+                "news",
+                "{{newsId}}"
+              ]
+            },
+            "description": "Get all comments for a specific news article\n- Public endpoint (no auth required)\n- Sorted by creation date (newest first)\n- Results are cached for 10 minutes\n- Rate limited: 30 requests per 15 minutes"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Comment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"This is a great news article! Thanks for sharing.\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/comments/news/{{newsId}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "comments",
+                "news",
+                "{{newsId}}"
+              ]
+            },
+            "description": "Create a new comment on a news article\n- Auth required\n- Any authenticated user can comment\n- Clears cache on success\n- Rate limited: 30 requests per 15 minutes"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Comment",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Updated comment text...\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/comments/{{commentId}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "comments",
+                "{{commentId}}"
+              ]
+            },
+            "description": "Update a comment\n- Auth required\n- Only comment owner or admin can update\n- Clears cache on success\n- Rate limited: 30 requests per 15 minutes"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Comment",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:4000/api/comments/{{commentId}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "4000",
+              "path": [
+                "api",
+                "comments",
+                "{{commentId}}"
+              ]
+            },
+            "description": "Delete a comment\n- Auth required\n- Only comment owner or admin can delete\n- Clears cache on success\n- Rate limited: 30 requests per 15 minutes"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string",
+      "description": "JWT token from login/register response. Copy and paste the token value here."
+    },
+    {
+      "key": "newsId",
+      "value": "",
+      "type": "string",
+      "description": "News article ID from list or create response"
+    },
+    {
+      "key": "commentId",
+      "value": "",
+      "type": "string",
+      "description": "Comment ID from comments list response"
+    }
+  ]
+}
